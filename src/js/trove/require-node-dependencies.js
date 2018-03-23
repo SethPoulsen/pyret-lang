@@ -30,5 +30,7 @@ lockfile = nodeRequire("lockfile");
 define("lockfile", [], function () { return lockfile; });
 
 websocket = nodeRequire("websocket");
-define("websocket", [], function () { return websocket });
+define("websocket", [], function () { return websocket; });
 
+readlineSync = nodeRequire("readline-sync");
+define("readline-sync", [], function () { return readlineSync; });
