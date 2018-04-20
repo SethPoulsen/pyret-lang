@@ -149,7 +149,7 @@ data Name:
     method tosourcestring(self): "$type$" + self.s end,
     method toname(self): self.s end,
     method key(self): "tglobal#" + self.s end
-    
+
   | s-atom(base :: String, serial :: Number) with:
     method to-compiled-source(self): PP.str(self.to-compiled()) end,
     method to-compiled(self): self.base + tostring(self.serial) end,
@@ -692,7 +692,7 @@ data Expr:
       _else = str-elsecolon + PP.nest(INDENT, break-one + self._else.tosource())
       PP.group(first-branch + first-sep + branches + break-one + _else + break-one + str-end)
     end
-  | s-cases(l :: Loc, typ :: Ann, val :: Expr, branches :: List<CasesBranch>, blocky :: Boolean) with:
+  | s-cases(l :: Loc, types :: List<Ann>, vals :: List<Expr>, branches :: List<CasesBranch>, blocky :: Boolean) with:
     method label(self): "s-cases" end,
     method branches-loc(self):
       first-loc = self.branches.first.l
@@ -713,7 +713,7 @@ data Expr:
         PP.group(header), break-one, str-end,
         self.branches.map(lam(b): PP.group(b.tosource()) end))
     end
-  | s-cases-else(l :: Loc, typ :: Ann, val :: Expr, branches :: List<CasesBranch>, _else :: Expr, blocky :: Boolean) with:
+  | s-cases-else(l :: Loc, types :: List<Ann>, vals :: List<Expr>, branches :: List<CasesBranch>, _else :: Expr, blocky :: Boolean) with:
     method label(self): "s-cases-else" end,
     method tosource(self):
       header = str-cases + PP.parens(self.typ.tosource()) + break-one
@@ -837,13 +837,13 @@ data Expr:
   | s-tuple(l :: Loc, fields :: List<Expr>) with:
     method label(self): "s-tuple" end,
     method tosource(self):
-      PP.surround-separate(INDENT, 1, PP.str("Empty tuple shoudn't happen"), 
+      PP.surround-separate(INDENT, 1, PP.str("Empty tuple shoudn't happen"),
         PP.lbrace, PP.semibreak, PP.rbrace, self.fields.map(_.tosource()))
     end
   | s-tuple-get(l :: Loc, tup :: Expr, index :: Number, index-loc :: Loc) with:
     method label(self): "s-tuple-get" end,
     method tosource(self): self.tup.tosource() + PP.str(".") + PP.lbrace + PP.number(self.index) + PP.rbrace
-    end 
+    end
   | s-obj(l :: Loc, fields :: List<Member>) with:
     method label(self): "s-obj" end,
     method tosource(self):
@@ -1218,7 +1218,7 @@ data SpyField:
     method tosource(self): self.name.tosource() end
   | s-spy-expr(l :: Loc, name :: String, value :: Expr) with:
     method label(self): "s-spy-expr" end,
-    method tosource(self): 
+    method tosource(self):
       PP.nest(INDENT, PP.str(self.name) + str-colonspace + self.value.tosource())
     end
 sharing:
@@ -1542,8 +1542,12 @@ sharing:
   end
 end
 
+data CasesVar:
+ | cases-var(name :: String, args :: List<CasesBind>)
+end
+
 data CasesBranch:
-  | s-cases-branch(l :: Loc, pat-loc :: Loc, name :: String, args :: List<CasesBind>, body :: Expr) with:
+  | s-cases-branch(l :: Loc, pat-loc :: Loc, vars List<CasesVar>, body :: Expr) with:
     method label(self): "s-cases-branch" end,
     method tosource(self):
       PP.nest(INDENT,
@@ -1783,7 +1787,7 @@ fun toplevel-ids(program :: Program) -> List<Name>:
     | else => raise("Non-program given to toplevel-ids")
   end
 end
-    
+
 default-map-visitor = {
   method option(self, opt):
     cases(Option) opt:
@@ -2306,7 +2310,7 @@ default-map-visitor = {
   method s-table-src(self, l, src :: Expr):
     s-table-src(l, src.visit(self))
   end,
-  
+
   method s-spy-block(self, l :: Loc, message :: Option<Expr>, contents :: List<SpyField>):
     s-spy-block(l, self.option(message), contents.map(_.visit(self)))
   end,
@@ -2851,7 +2855,7 @@ default-iter-visitor = {
   method s-table-src(self, l, src):
     src.visit(self)
   end,
-    
+
   method s-spy-block(self, l :: Loc, message :: Option<Expr>, contents :: List<SpyField>):
     self.option(message) and lists.all(_.visit(self), contents)
   end,
@@ -2861,7 +2865,7 @@ default-iter-visitor = {
   method s-spy-expr(self, l :: Loc, name :: String, value :: Expr):
     value.visit(self)
   end,
-  
+
   method a-blank(self):
     true
   end,

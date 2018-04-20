@@ -1034,14 +1034,15 @@
         'cases-expr': function(node) {
           var isBlock = (node.kids[5].name === "BLOCK");
           if (node.kids[node.kids.length - 4].name === "ELSE") {
+            // cases-expr: CASES (PARENSPACE|PARENNOSPACE) ann (COMMA ann)* RPAREN binop-expr (COMMA binop-expr)* (BLOCK|COLON) cases-branch* [BAR ELSE THICKARROW block] END
             // (cases-expr CASES LPAREN type RPAREN val COLON branch ... PIPE ELSE THICKARROW elseblock END)
             return RUNTIME.getField(ast, 's-cases-else')
-              .app(pos(node.pos), tr(node.kids[2]), tr(node.kids[4]),
+              .app(pos(node.pos), makeListTr(node.kids[2]), makeListTr(node.kids[4]),
                    makeListTr(node.kids, 6, node.kids.length - 5), tr(node.kids[node.kids.length - 2]), isBlock);
           } else {
             // (cases-expr CASES LPAREN type RPAREN val COLON branch ... END)
             return RUNTIME.getField(ast, 's-cases')
-              .app(pos(node.pos), tr(node.kids[2]), tr(node.kids[4]),
+              .app(pos(node.pos), makeListTr(node.kids[2]), makeListTr(node.kids[4]),
                    makeListTr(node.kids, 6, node.kids.length - 1), isBlock);
           }
         },
