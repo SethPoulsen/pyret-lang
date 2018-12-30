@@ -780,11 +780,20 @@ fun resolve-names(p :: A.Program, initial-env :: C.CompileEnvironment):
     end
   end
 
+  fun println(top) block:
+    print(top)
+    print("\n")
+  end
+
   fun scope-env-from-env(initial :: C.CompileEnvironment) block:
     acc = SD.make-mutable-string-dict()
     for SD.each-key(name from initial.globals.values):
+      # println(name)
       mod-info = initial.provides-by-value-name-value(name)
+      # println(mod-info)
+      # println("---")
       val-info = mod-info.values.get(name)
+      # println(val-info)
       # TODO(joe): I am a little confused about how many times we are asserting
       # that something is bound here, in bindings vs. in the environment
       cases(Option) val-info block:

@@ -179,6 +179,11 @@
                          'name': 'within-rel-now',
                          'typ':["arrow", ["Number"], "AnyPred2"]},
 
+      // Number Constants
+
+      "num-pi": "Number",
+      "num-e": "Number",
+
       // Number functions
 
       "num-is-fixnum":{'bind': 'fun', 'flatness': 0, 'name': 'num-is-fixnum', 'typ': 'NumPred'},
@@ -500,6 +505,7 @@
   },
   nativeRequires: [ ],
   theModule: function(runtime, namespace, uri /* intentionally blank */) {
+    console.log(runtime.globalModuleObject["num-pi"]);
     return runtime.globalModuleObject;
   }
 })

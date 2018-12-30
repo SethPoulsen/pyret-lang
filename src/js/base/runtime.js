@@ -4839,6 +4839,10 @@ function (Namespace, jsnums, codePoint, util, exnStackParser, loader, seedrandom
 
     var rng = seedrandom("ahoy, world!");
 
+    var num_pi = Math.PI;
+    var num_e = Math.E;
+
+
     var num_random = function(max) {
       if (arguments.length !== 1) { var $a=new Array(arguments.length); for (var $i=0;$i<arguments.length;$i++) { $a[$i]=arguments[$i]; } throw thisRuntime.ffi.throwArityErrorC(["num-random"], 1, $a, false); }
       thisRuntime.checkArgsInternal1("Numbers", "num-random",
@@ -5575,6 +5579,8 @@ function (Namespace, jsnums, codePoint, util, exnStackParser, loader, seedrandom
       '_greaterequal': makeFunction(greaterequal, "_greaterequal"),
       '_lessequal': makeFunction(lessequal, "_lessequal"),
 
+      'num-pi': makeNumber(num_pi),
+      'num-e': makeNumber(num_e),
       'num-random': makeFunction(num_random, "num-random"),
       'num-random-seed': makeFunction(num_random_seed, "num-random-seed"),
       'num-max': makeFunction(num_max, "num-max"),
@@ -5885,6 +5891,8 @@ function (Namespace, jsnums, codePoint, util, exnStackParser, loader, seedrandom
       'greaterequal': greaterequal,
       'lessequal': lessequal,
 
+      'num_pi': num_pi,
+      'num_e': num_e,
       'num_max': num_max,
       'num_min': num_min,
       'num_abs': num_abs,

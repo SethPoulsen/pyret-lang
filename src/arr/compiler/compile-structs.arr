@@ -196,10 +196,22 @@ sharing:
     self.all-modules.get-now(uri)
       .and-then(_.provides)
   end,
-  method provides-by-dep-key(self, dep-key):
-    self.my-modules.get(dep-key)
-      .and-then(self.all-modules.get-value-now(_))
-      .and-then(_.provides)
+  method provides-by-dep-key(self, dep-key) block:
+    print(dep-key)
+    print("\n")
+    a = self.my-modules.get(dep-key)
+      
+    print(a)
+    b = cases(Option) a:
+      | none => none
+      | some(s) => some(self.all-modules.get-value-now(s))
+      end
+    print("\n\n")
+    print(b)
+    cases(Option) b:
+    | none => none
+    | some(s) => some(s.provides)
+    end
   end,
   method provides-by-dep-key-value(self, dep-key):
     cases(Option) self.provides-by-dep-key(dep-key):
@@ -2764,6 +2776,8 @@ runtime-provides = provides("builtin://global",
     "string-to-code-points", t-top,
     "string-from-code-points", t-top,
     "time-now", t-number-unop,
+    "num-pi", t-number,
+    "num-e", t-number,
     "num-random", t-number-unop,
     "num-random-seed", t-arrow([list: t-number], t-nothing),
     "num-max", t-number-binop,
@@ -2886,6 +2900,8 @@ shadow runtime-types = for SD.fold-keys(rt from runtime-types, k from runtime-pr
   rt.set(k, "builtin(global)")
 end
 
+# print(runtime-values)
+# print("\n")
 # MARK(joe/ben): modules
 no-builtins = compile-env(globals([string-dict: ], [string-dict: ], [string-dict: ]), [mutable-string-dict:],[string-dict:])
 
